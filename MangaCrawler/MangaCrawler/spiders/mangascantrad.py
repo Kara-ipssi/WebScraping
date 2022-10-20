@@ -12,6 +12,8 @@ class MangascantradSpider(scrapy.Spider):
     start_urls_list = [f'https://www.japscan.me/mangas/{n}' for n in range(1, 31)]
     start_urls = [f'https://www.japscan.me/manga/{n}' for n in start_urls_list]
 
+    mangas_url_list = []
+
     # Création de la base de données
     database = DataBase('database_manga')
 
@@ -37,9 +39,16 @@ class MangascantradSpider(scrapy.Spider):
     database.create_table_relationship('mangas_assoc_types', 'mangas', 'mangas_types')
 
     def start_requests(self):
-        print("iok")
-        # for url in self.start_urls:
-        #     yield Request(url=url, callback=self.parse_manga)
+        # print("iok")
+        for url in self.start_urls:
+            # appel la fonction addlinks en asynchrone avec la response
+            yield Request(url=url, callback=self.addlinks)
+
+    def addlinks(self, response):
+        items = response.css("div.p-2 p.p-1.text-center a")
+        for item in items:
+            domaine = "https://www.japscan.me"
+            yield self.mangas_url_list.append(domaine + item.css["a"].attrib['href'])
 
     def parse_manga(self, response):
         mangas = response.css('div.js-categories-seasonal.js-block-list.list table tr')[1:]
