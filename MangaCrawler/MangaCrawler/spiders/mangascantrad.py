@@ -6,10 +6,11 @@ from sqlalchemy.orm import declarative_base, relationship
 
 class MangascantradSpider(scrapy.Spider):
     name = 'mangascantrad'
-    allowed_domains = ['manga-scantrad.net']
+    allowed_domains = ['www.japscan.me']
 
     # Liste des urls par pages
-    start_urls = [f'http://manga-scantrad.net/manga/page/{n}' for n in range(1, 31)]
+    start_urls_list = [f'http://www.japscan.me/mangas/{n}' for n in range(1, 31)]
+    start_urls = [f'http://www.japscan.me/mangas/{n}' for n in start_urls_list]
 
     # Création de la base de données
     database = DataBase('database_manga')
