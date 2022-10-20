@@ -1,5 +1,7 @@
 import scrapy
+from scrapy import Request
 from MangaCrawler.items import MangaGenres, DataBase
+import sqlalchemy as db
 
 class MangascantradSpider(scrapy.Spider):
     name = 'mangascantrad'
