@@ -16,7 +16,7 @@ class MangascantradSpider(scrapy.Spider):
     database = DataBase('database_manga')
 
     # Creation des tables avec une relation ManyToMany
-    database.create_table('mangas_genres',
+    database.create_table('mangas_types',
                           id_=db.Integer,
                           name=db.String,
                           )
@@ -25,15 +25,16 @@ class MangascantradSpider(scrapy.Spider):
                           id_=db.Integer,
                           title=db.String,
                           img=db.String,
-                          rating=db.String,
+                          origin=db.String,
+                          description=db.String,
                           last_chapter=db.String,
                           link=db.String,
+                          category=db.String,
                           published_date=db.String,
                           state=db.String,
-                          nb_comments=db.String,
                           )
 
-    database.create_table_relationship('mangas_assoc_genres', 'mangas', 'mangas_genres')
+    database.create_table_relationship('mangas_assoc_types', 'mangas', 'mangas_types')
 
     def start_requests(self):
         print("iok")

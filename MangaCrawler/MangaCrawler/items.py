@@ -6,13 +6,13 @@ class MangacrawlerItem(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field()
     img = scrapy.Field()
-    rating = scrapy.Field()
+    origin = scrapy.Field()
+    description = scrapy.Field()
     last_chapter = scrapy.Field()
     link = scrapy.Field()
-    genres = scrapy.Field()
+    category = scrapy.Field()
     published_date = scrapy.Field()
     state = scrapy.Field()
-    nb_comments = scrapy.Field()
     pass
 
 
