@@ -39,10 +39,12 @@ class MangascantradSpider(scrapy.Spider):
     database.create_table_relationship('mangas_assoc_types', 'mangas', 'mangas_types')
 
     def start_requests(self):
-        # print("iok")
-        for url in self.start_urls:
+        # Récupérer la liste des liens
+        for url in self.start_urls_list:
             # appel la fonction addlinks en asynchrone avec la response
             yield Request(url=url, callback=self.addlinks)
+        # Récupérer les informations par lien manga
+        print(self.mangas_url_list)
 
     def addlinks(self, response):
         items = response.css("div.p-2 p.p-1.text-center a")
