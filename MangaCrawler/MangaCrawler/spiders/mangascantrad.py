@@ -59,6 +59,12 @@ class MangascantradSpider(scrapy.Spider):
         manga = response
         item = MangacrawlerItem()
 
+        # Lien manga 
+        try:
+            item['link'] = manga.url
+        except:
+            item['link'] = "None"
+
         # Titre manga
         try:
             item['title'] = manga.css('div#main div.card-body h1::text').get()
