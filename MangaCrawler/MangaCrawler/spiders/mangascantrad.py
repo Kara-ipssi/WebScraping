@@ -122,5 +122,5 @@ class MangascantradSpider(scrapy.Spider):
             #                       img=item['img'],
             #                       description=item['description']
             #                       )
-            yield item
+            yield item 
 
