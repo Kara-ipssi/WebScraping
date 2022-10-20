@@ -35,6 +35,7 @@ class MangaGenres:
         ]
 
 
+
 class DataBase():
     def __init__(self, name_database='database'):
         self.name = name_database
