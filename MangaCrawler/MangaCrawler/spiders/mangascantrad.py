@@ -1,8 +1,8 @@
 import scrapy
 from scrapy import Request
-from MangaCrawler.items import MangaGenres, DataBase
+from MangaCrawler.items import MangaGenres, MangacrawlerItem, DataBase
 import sqlalchemy as db
-
+from sqlalchemy.orm import declarative_base, relationship
 
 class MangascantradSpider(scrapy.Spider):
     name = 'mangascantrad'
@@ -14,9 +14,21 @@ class MangascantradSpider(scrapy.Spider):
     # Création de la base de données
     database = DataBase('database_manga')
 
-    # Creation des tables
-    database.create_table('mangas_genres', name=db.String)
+    # Creation des tables avec une relation ManyToMany
+    Base = declarative_base()
+    association_table = db.Table(
+        "mangas_assoc_genres",
+        Base.metadata,
+        db.Column("mangas_id", db.ForeignKey("mangas.id_")),
+        db.Column("mangas_genres_id", db.ForeignKey("mangas_genres.id_")),
+    )
+    database.create_table('mangas_genres',
+                          id_=db.Integer,
+                          name=db.String,
+                          )
+
     database.create_table('mangas',
+                          id_=db.Integer,
                           title=db.String,
                           img=db.String,
                           rating=db.String,
@@ -25,17 +37,19 @@ class MangascantradSpider(scrapy.Spider):
                           genres=db.String,
                           published_date=db.String,
                           state=db.String,
-                          nb_comments=db.String
+                          nb_comments=db.String,
+                          children=relationship("mangas_genres", secondary=association_table)
                           )
 
     def start_requests(self):
-        for url in self.start_urls:
-            yield Request(url=url, callback=self.parse_manga)
+        print("iok")
+        # for url in self.start_urls:
+        #     yield Request(url=url, callback=self.parse_manga)
 
     def parse_manga(self, response):
         mangas = response.css('div.js-categories-seasonal.js-block-list.list table tr')[1:]
         for manga in mangas:
-            item = ReviewsMangaItem()
+            item = MangacrawlerItem()
 
             # Nom manga
             try:
