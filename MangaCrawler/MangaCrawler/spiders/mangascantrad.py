@@ -45,82 +45,85 @@ class MangascantradSpider(scrapy.Spider):
             yield Request(url=url, callback=self.addlinks)
         # Récupérer les informations par lien manga
 
+        for url in self.mangas_url_list:
+            yield Request(url=url, callback=self.parse_manga)
+
     def addlinks(self, response):
-        items = response.css("div.p-2 p.p-1.text-center a")
+        items = response.css("div.p-2 p.p-1.text-center")
         for item in items:
             domaine = "https://www.japscan.me"
-            yield self.mangas_url_list.append(domaine + item.css["a"].attrib['href'])
+            yield self.mangas_url_list.append(domaine + item.css("a").attrib['href'])
 
     def parse_manga(self, response):
-        mangas = response.css('div.js-categories-seasonal.js-block-list.list table tr')[1:]
-        for manga in self.mangas_url_list:
-            item = MangacrawlerItem()
+    # Récupérer les informations par lien manga
+        manga = response
+        item = MangacrawlerItem()
 
-            # Titre manga
-            try:
-                item['title'] = manga.css('div#main div.card-body h1::text').get()
-            except:
-                item['title'] = 'None'
+        # Titre manga
+        try:
+            item['title'] = manga.css('div#main div.card-body h1::text').get()
+        except:
+            item['title'] = 'None'
 
-            # Image manga
-            try:
-                item['img'] = manga.css('div#main div.card-body img').attrib['src']
-            except:
-                item['img'] = 'None'
+        # Image manga
+        try:
+            item['img'] = manga.css('div#main div.card-body img').attrib['src']
+        except:
+            item['img'] = 'None'
 
-            # Origin manga
-            try:
-                item['origin'] = manga.css('div#main div.card-body p.mb-2')[1].css('span::text')[1].get()
-            except:
-                item['origin'] = 'None'
+        # Origin manga
+        try:
+            item['origin'] = manga.css('div#main div.card-body p.mb-2')[1].css('span::text')[1].get()
+        except:
+            item['origin'] = 'None'
 
-            # description manga
-            try:
-                item['description'] = manga.css('div#main div.card-body p.list-group-item.list-group-item-primary.text-justify::text').get()
-            except:
-                item['description'] = 'None'
+        # description manga
+        try:
+            item['description'] = manga.css('div#main div.card-body p.list-group-item.list-group-item-primary.text-justify::text').get()
+        except:
+            item['description'] = 'None'
 
-            # Dernier chapitre manga
-            try:
-                item['last_chapter'] = manga.css('div#chapters_list div.collapse.show div.chapters_list.text-truncate').get().split(':')[0].split('\t')[-1]
-            except:
-                item['last_chapter'] = 'None'
+        # Dernier chapitre manga
+        try:
+            item['last_chapter'] = manga.css('div#chapters_list div.collapse.show div.chapters_list.text-truncate').get().split(':')[0].split('\t')[-1]
+        except:
+            item['last_chapter'] = 'None'
 
-            # Lien manga
-            try:
-                item['last_chapter'] = manga.request.url
-            except:
-                item['last_chapter'] = 'None'
+        # Lien manga
+        try:
+            item['last_chapter'] = manga.request.url
+        except:
+            item['last_chapter'] = 'None'
 
-            # Type du manga
-            try:
-                item['type'] = manga.css('div#main div.card-body p.mb-2')[4].get().split('</span')[1].split('\t')[7].strip()
-            except:
-                item['type'] = 'None'
+        # Type du manga
+        try:
+            item['type'] = manga.css('div#main div.card-body p.mb-2')[4].get().split('</span')[1].split('\t')[7].strip()
+        except:
+            item['type'] = 'None'
 
-            # genres manga
-            try:
-                item['genres'] = manga.css('div#main div.card-body p.mb-2')[5].get().split('</span')[1].split('\t')[7].strip()
-            except:
-                item['genres'] = 'None'
+        # genres manga
+        try:
+            item['genres'] = manga.css('div#main div.card-body p.mb-2')[5].get().split('</span')[1].split('\t')[7].strip()
+        except:
+            item['genres'] = 'None'
 
-            # Date du manga
-            try:
-                item['published_date'] = manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[7].strip()
-            except:
-                item['published_date'] = 'None'
+        # Date du manga
+        try:
+            item['published_date'] = manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[7].strip()
+        except:
+            item['published_date'] = 'None'
 
-            # Etat manga
-            try:
-                item['state'] = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
-            except:
-                item['state'] = 'None'
+        # Etat manga
+        try:
+            item['state'] = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
+        except:
+            item['state'] = 'None'
 
-            # Ajouter dans la base de données
-            # self.database.add_row('manga',
-            #                       name=item['name'],
-            #                       img=item['img'],
-            #                       description=item['description']
-            #                       )
-            yield item 
+        # Ajouter dans la base de données
+        # self.database.add_row('manga',
+        #                       name=item['name'],
+        #                       img=item['img'],
+        #                       description=item['description']
+        #                       )
+        yield item 
 
