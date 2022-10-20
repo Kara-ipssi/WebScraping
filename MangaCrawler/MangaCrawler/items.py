@@ -51,6 +51,17 @@ class DataBase():
         self.metadata.create_all(self.engine)
         print(f"*********Table : '{name_table}' are created succesfully************")
 
+    def create_table_relationship(self, assoc_name, table_name1, table_name2):
+        db.Table(
+            assoc_name,
+            self.metadata,
+            db.Column("id_", db.Integer, primary_key=True),
+            db.Column(f"{table_name1}_id", db.Integer, db.ForeignKey(f"{table_name1}.id_")),
+            db.Column(f"{table_name2}_id", db.Integer, db.ForeignKey(f"{table_name2}.id_")),
+        )
+        self.metadata.create_all(self.engine)
+        print(f"*********Table Relationship : '{assoc_name}' are created succesfully************")
+
     def read_table(self, name_table, return_keys=False):
         table = db.Table(name_table, self.metadata, autoload=True, autoload_with=self.engine)
         if return_keys:
