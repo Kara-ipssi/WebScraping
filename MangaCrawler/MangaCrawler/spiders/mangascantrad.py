@@ -53,7 +53,7 @@ class MangascantradSpider(scrapy.Spider):
             yield self.mangas_url_list.append(domaine + item.css("a").attrib['href'])
 
     def parse_manga(self, response):
-    # Récupérer les informations par lien manga
+        # Récupérer les informations par lien manga
         manga = response
         item = MangacrawlerItem()
 
@@ -77,9 +77,9 @@ class MangascantradSpider(scrapy.Spider):
 
         # Origin manga
         try:
-            item['origin'] = manga.css('div#main div.card-body p.mb-2')[2].css('span::text')[1].get()
-        except:
             item['origin'] = manga.css('div#main div.card-body p.mb-2')[1].css('span::text')[1].get()
+        except:
+            item['origin'] = manga.css('div#main div.card-body p.mb-2')[2].css('span::text')[1].get()
 
         # description manga
         try:
@@ -101,33 +101,49 @@ class MangascantradSpider(scrapy.Spider):
 
         # Type du manga
         try:
-            item['type'] = manga.css('div#main div.card-body p.mb-2')[4].get().split('</span')[1].split('\t')[7].strip()
+            item['type'] = 'None'
+            for i in range (1, 8):
+                if manga.css('div#main div.card-body p.mb-2')[i].get().split(':')[0].split('>')[2] == 'Type(s)':
+                    item['type'] = manga.css('div#main div.card-body p.mb-2')[i].get().split('</span')[1].split('\t')[7].strip()
         except:
             item['type'] = 'None'
 
         # genres manga
         try:
-            item['genres'] = manga.css('div#main div.card-body p.mb-2')[5].get().split('</span')[1].split('\t')[7].strip()
+            item['genres'] = 'None'
+            for i in range(1, 8):
+                if manga.css('div#main div.card-body p.mb-2')[i].get().split(':')[0].split('>')[2] == 'Genre(s)':
+                    item['genres'] = manga.css('div#main div.card-body p.mb-2')[i].get().split('</span')[1].split('\t')[7].strip()
         except:
             item['genres'] = 'None'
 
         # Date du manga
         try:
-            item['published_date'] = manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[7].strip()
+            item['published_date'] = 'None'
+            for i in range(1, 8):
+                if manga.css('div#main div.card-body p.mb-2')[i].get().split(':')[0].split('>')[2] == 'Date Sortie':
+                    item['published_date'] = manga.css('div#main div.card-body p.mb-2')[i].get().split('</span')[1].split('\t')[7].strip()
         except:
             item['published_date'] = 'None'
 
         # Etat manga
         try:
-            item['state'] = manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[6].strip()
+            stateM = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
+            item['state'] = stateM if stateM != '' else manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[6].strip()
         except:
-            item['state'] = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
+            item['state'] = "None"
 
         # Ajouter dans la base de données
-        # self.database.add_row('manga',
-        #                       name=item['name'],
-        #                       img=item['img'],
-        #                       description=item['description']
-        #                       )
-        yield item 
-
+        self.database.add_row('mangas',
+                              title=item['title'],
+                              img=item['img'],
+                              origin=item['origin'],
+                              description=item['description'],
+                              last_chapter=item['last_chapter'],
+                              link=item['link'],
+                              type=item['type'],
+                              genres=item['genres'],
+                              published_date=item['published_date'],
+                              state=item['state']
+                              )
+        yield item
