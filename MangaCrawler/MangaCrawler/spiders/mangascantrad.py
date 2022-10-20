@@ -119,9 +119,9 @@ class MangascantradSpider(scrapy.Spider):
 
         # Etat manga
         try:
-            item['state'] = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
+            item['state'] = manga.css('div#main div.card-body p.mb-2')[3].get().split('</span')[1].split('\t')[6].strip()
         except:
-            item['state'] = 'None'
+            item['state'] = manga.css('div#main div.card-body p.mb-2')[2].get().split('</span')[1].split('\t')[6].strip()
 
         # Ajouter dans la base de données
         # self.database.add_row('manga',
