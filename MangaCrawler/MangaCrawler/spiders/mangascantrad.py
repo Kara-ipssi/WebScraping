@@ -9,8 +9,8 @@ class MangascantradSpider(scrapy.Spider):
     allowed_domains = ['www.japscan.me']
 
     # Liste des urls par pages
-    start_urls_list = [f'http://www.japscan.me/mangas/{n}' for n in range(1, 31)]
-    start_urls = [f'http://www.japscan.me/mangas/{n}' for n in start_urls_list]
+    start_urls_list = [f'https://www.japscan.me/mangas/{n}' for n in range(1, 31)]
+    start_urls = [f'https://www.japscan.me/manga/{n}' for n in start_urls_list]
 
     # Création de la base de données
     database = DataBase('database_manga')
