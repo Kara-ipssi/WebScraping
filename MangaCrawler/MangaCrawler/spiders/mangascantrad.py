@@ -6,10 +6,10 @@ import sqlalchemy as db
 class MangascantradSpider(scrapy.Spider):
     name = 'mangascantrad'
     allowed_domains = ['www.japscan.me']
+    domaine = "https://www.japscan.me"
 
     # Liste des urls par pages
     start_urls_list = [f'https://www.japscan.me/mangas/{n}' for n in range(1, 31)]
-
     mangas_url_list = []
 
     # Création de la base de données
@@ -49,8 +49,7 @@ class MangascantradSpider(scrapy.Spider):
     def addlinks(self, response):
         items = response.css("div.p-2 p.p-1.text-center")
         for item in items:
-            domaine = "https://www.japscan.me"
-            yield self.mangas_url_list.append(domaine + item.css("a").attrib['href'])
+            yield self.mangas_url_list.append(self.domaine + item.css("a").attrib['href'])
 
     def parse_manga(self, response):
         # Récupérer les informations par lien manga
@@ -71,7 +70,7 @@ class MangascantradSpider(scrapy.Spider):
 
         # Image manga
         try:
-            item['img'] = manga.css('div#main div.card-body img').attrib['src']
+            item['img'] = self.domaine + manga.css('div#main div.card-body img').attrib['src']
         except:
             item['img'] = 'None'
 
@@ -89,7 +88,7 @@ class MangascantradSpider(scrapy.Spider):
 
         # Dernier chapitre manga
         try:
-            item['last_chapter'] = manga.css('div#chapters_list div.collapse.show div.chapters_list.text-truncate').get().split(':')[0].split('\t')[-1]
+            item['last_chapter'] = manga.css('div#chapters_list div.collapse.show div.chapters_list.text-truncate a::text').get().strip()
         except:
             item['last_chapter'] = 'None'
 
