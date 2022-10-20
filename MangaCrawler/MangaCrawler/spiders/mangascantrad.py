@@ -9,7 +9,6 @@ class MangascantradSpider(scrapy.Spider):
 
     # Liste des urls par pages
     start_urls_list = [f'https://www.japscan.me/mangas/{n}' for n in range(1, 31)]
-    start_urls = [f'https://www.japscan.me/manga/{n}' for n in start_urls_list]
 
     mangas_url_list = []
 
@@ -44,7 +43,6 @@ class MangascantradSpider(scrapy.Spider):
             # appel la fonction addlinks en asynchrone avec la response
             yield Request(url=url, callback=self.addlinks)
         # Récupérer les informations par lien manga
-
         for url in self.mangas_url_list:
             yield Request(url=url, callback=self.parse_manga)
 
@@ -79,9 +77,9 @@ class MangascantradSpider(scrapy.Spider):
 
         # Origin manga
         try:
-            item['origin'] = manga.css('div#main div.card-body p.mb-2')[1].css('span::text')[1].get()
+            item['origin'] = manga.css('div#main div.card-body p.mb-2')[2].css('span::text')[1].get()
         except:
-            item['origin'] = 'None'
+            item['origin'] = manga.css('div#main div.card-body p.mb-2')[1].css('span::text')[1].get()
 
         # description manga
         try:
