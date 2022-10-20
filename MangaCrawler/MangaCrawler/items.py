@@ -10,13 +10,13 @@ class MangacrawlerItem(scrapy.Item):
     description = scrapy.Field()
     last_chapter = scrapy.Field()
     link = scrapy.Field()
-    category = scrapy.Field()
+    type = scrapy.Field()
+    genres = scrapy.Field()
     published_date = scrapy.Field()
     state = scrapy.Field()
-    pass
 
 
-class MangaGenres:
+class MangaTypes:
     def __init__(self):
         self.list = [
             'arts-martiaux',
@@ -33,7 +33,6 @@ class MangaGenres:
             'drame',
             'webtoons'
         ]
-
 
 
 class DataBase():

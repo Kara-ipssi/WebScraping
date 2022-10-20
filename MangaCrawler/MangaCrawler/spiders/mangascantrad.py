@@ -1,8 +1,7 @@
 import scrapy
 from scrapy import Request
-from MangaCrawler.items import MangaGenres, MangacrawlerItem, DataBase
+from MangaCrawler.items import MangaTypes, MangacrawlerItem, DataBase
 import sqlalchemy as db
-from sqlalchemy.orm import declarative_base, relationship
 
 class MangascantradSpider(scrapy.Spider):
     name = 'mangascantrad'
@@ -31,7 +30,8 @@ class MangascantradSpider(scrapy.Spider):
                           description=db.String,
                           last_chapter=db.String,
                           link=db.String,
-                          category=db.String,
+                          type=db.String,
+                          genres=db.String,
                           published_date=db.String,
                           state=db.String,
                           )
@@ -44,7 +44,6 @@ class MangascantradSpider(scrapy.Spider):
             # appel la fonction addlinks en asynchrone avec la response
             yield Request(url=url, callback=self.addlinks)
         # Récupérer les informations par lien manga
-        print(self.mangas_url_list)
 
     def addlinks(self, response):
         items = response.css("div.p-2 p.p-1.text-center a")
