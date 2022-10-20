@@ -1,22 +1,38 @@
 import scrapy
 import sqlalchemy as db
 
+
 class MangacrawlerItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
-
-
-class ReviewsAllocineItem(scrapy.Item):
     # define the fields for your item here like:
     title = scrapy.Field()
     img = scrapy.Field()
-    author = scrapy.Field()
-    time = scrapy.Field()
-    genre = scrapy.Field()
-    score = scrapy.Field()
-    desc = scrapy.Field()
-    release = scrapy.Field()
+    rating = scrapy.Field()
+    last_chapter = scrapy.Field()
+    link = scrapy.Field()
+    genres = scrapy.Field()
+    published_date = scrapy.Field()
+    state = scrapy.Field()
+    nb_comments = scrapy.Field()
+    pass
+
+
+class MangaGenres:
+    def __init__(self):
+        self.list = [
+            'arts-martiaux',
+            'action',
+            'shonen',
+            'seinen',
+            'shojo',
+            'josei',
+            'fantaisie',
+            'isekai',
+            'fantastique',
+            'romance',
+            'psychologique',
+            'drame',
+            'webtoons'
+        ]
 
 
 class DataBase():
